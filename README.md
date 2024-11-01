@@ -1,2 +1,2 @@
-# edu-logic
+# EduLogic
 Digital Circuit Simulator in C
