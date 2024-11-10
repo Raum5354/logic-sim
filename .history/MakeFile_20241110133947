@@ -1,3 +1,0 @@
-# Compile and flags
-CC = gcc
-CFLAGS 
