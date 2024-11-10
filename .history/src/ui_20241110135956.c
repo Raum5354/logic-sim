@@ -43,7 +43,7 @@ int initialize_ui(void) {
 
         // Clear the screen with a white background 
         SDL_SetRenderDrawColor(renderer, 255, 255, 255, 255);
-        SDL_RenderClear(renderer);
+        SLD_RenderClear(renderer);
 
         // Set colour to black for drawing shapes
         SDL_SetRenderDrawColor(renderer, 0, 0 , 0, 255);

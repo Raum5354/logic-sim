@@ -43,7 +43,7 @@ int initialize_ui(void) {
 
         // Clear the screen with a white background 
         SDL_SetRenderDrawColor(renderer, 255, 255, 255, 255);
-        SDL_RenderClear(renderer);
+        SLD_RenderClear(renderer);
 
         // Set colour to black for drawing shapes
         SDL_SetRenderDrawColor(renderer, 0, 0 , 0, 255);
@@ -65,16 +65,14 @@ int initialize_ui(void) {
                 int dx = radius - w; // Horizontal distance from the center
                 int dy = radius - h; // Vertical distance from the center
                 if ((dx*dx + dy*dy) <= (radius * radius)) {
-                    SDL_RenderDrawPoint(renderer, centerX + dx, centerY + dy);
+                    SDL_RenderDrawPoint
                 }
             }
         }
 
-        // Present the rendered content
-        SDL_RenderPresent(renderer);
+
     }
 
-    // Cleanup and quit SDL
     SDL_DestroyRenderer(renderer);
     SDL_DestroyWindow(window);
     SDL_Quit();

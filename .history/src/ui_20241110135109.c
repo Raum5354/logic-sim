@@ -43,38 +43,19 @@ int initialize_ui(void) {
 
         // Clear the screen with a white background 
         SDL_SetRenderDrawColor(renderer, 255, 255, 255, 255);
-        SDL_RenderClear(renderer);
+        SLD_RenderClear(renderer);
 
         // Set colour to black for drawing shapes
-        SDL_SetRenderDrawColor(renderer, 0, 0 , 0, 255);
+        SDL_SetRenderDrawColor(render)
 
-        // Draw a rectangle for the AND gate
-        SDL_Rect andGate = {100, 100, 100, 50}; // x, y, width, height
-        SDL_RenderFillRect(renderer, &andGate);
+        SDL_SetRenderDrawColor(renderer, 255, 255, 255, 255);
+        SDL_RenderClear(renderer);
 
-        // Draw a rectangle for the OR gate
-        SDL_Rect orGate = {250, 100, 100, 50};
-        SDL_RenderFillRect(renderer, &orGate);
+        // Rendering content can go here
 
-        // Draw a circle for the NOTE gate
-        int centerX = 450;
-        int centerY = 125; 
-        int radius = 25;
-        for (int w = 0; w < radius * 2; w++) {
-            for (int h = 0; h < radius * 2; h++) {
-                int dx = radius - w; // Horizontal distance from the center
-                int dy = radius - h; // Vertical distance from the center
-                if ((dx*dx + dy*dy) <= (radius * radius)) {
-                    SDL_RenderDrawPoint(renderer, centerX + dx, centerY + dy);
-                }
-            }
-        }
-
-        // Present the rendered content
         SDL_RenderPresent(renderer);
     }
 
-    // Cleanup and quit SDL
     SDL_DestroyRenderer(renderer);
     SDL_DestroyWindow(window);
     SDL_Quit();
