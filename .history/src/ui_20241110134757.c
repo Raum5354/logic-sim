@@ -10,10 +10,10 @@ int initialize_ui(void) {
         return 1;
     }
 
-    SDL_Window *window = SDL_CreateWindow("EduLogic: Circuit Simulator",
+    SDL_Window *window = SDL_CreateWindow("EduLogic: Digital Circuit Simulator",
                                           SDL_WINDOWPOS_CENTERED, SDL_WINDOWPOS_CENTERED,
-                                          WINDOW_WIDTH, WINDOW_HEIGHT, SDL_WINDOW_SHOWN);
-
+                                          800, 600, SDL_WINDOW_SHOWN);
+    
     if (!window) {
         printf("SDL Window Error: %s\n", SDL_GetError());
         SDL_Quit();
