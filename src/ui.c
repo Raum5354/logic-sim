@@ -11,7 +11,7 @@ int initialize_ui(void) {
     }
 
     // Create the SDL window
-    SDL_Window *window = SDL_CreateWindow("EduLogic: Circuit Simulator",
+    SDL_Window *window = SDL_CreateWindow("Logic Sim: Digital Circuit Simulator",
                                           SDL_WINDOWPOS_CENTERED, SDL_WINDOWPOS_CENTERED,
                                           WINDOW_WIDTH, WINDOW_HEIGHT, SDL_WINDOW_SHOWN);
 

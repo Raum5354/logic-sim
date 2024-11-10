@@ -4,7 +4,7 @@ CFLAGS = -I./include -I/opt/homebrew/include -D_THREAD_SAFE
 LDFLAGS = -L/opt/homebrew/lib -lSDL2
 
 # Output binary
-TARGET = build/edu-logic
+TARGET = build/logic-sim
 
 # Source files
 SRCS = src/main.c src/gates.c src/ui.c

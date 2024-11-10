@@ -2,7 +2,7 @@
 #include "ui.h"
 
 int main(int argc, char *argv[]) {
-	printf("Starting EduLogic: Digital Circuit Simulator\n");
+	printf("Starting Logic Sim: Digital Circuit Simulator\n");
 
     // Initialise the GUI
     if (initialize_ui() != 0) {
