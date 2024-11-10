@@ -3,4 +3,4 @@
 
 int initialize_ui();
 
-#endif 
+#endif // UI_H
