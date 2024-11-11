@@ -54,9 +54,9 @@ int initialize_ui(void) {
         SDL_SetRenderDrawColor(renderer, 0, 0 , 0, 255);
 
         // Draw each gate at a specified position
-        draw_and_gate(renderer, 300, 100);
-        draw_or_gate(renderer, 300, 200);
-        draw_not_gate(renderer, 300, 300);
+        draw_and_gate(renderer, 200, 300);
+        draw_or_gate(renderer, 300, 300);
+        draw_not_gate(renderer, 500, 300);
 
         // Present the rendered content
         SDL_RenderPresent(renderer);
