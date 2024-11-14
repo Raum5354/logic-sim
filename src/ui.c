@@ -8,6 +8,7 @@
 void draw_and_gate(SDL_Renderer *renderer, int x, int y);
 void draw_or_gate(SDL_Renderer *renderer, int x, int y);
 void draw_not_gate(SDL_Renderer *renderer, int x, int y);
+double get_x_on_circle(int x_center, int y_center, int radius, int y);
 
 int initialize_ui(void) {
     if (SDL_Init(SDL_INIT_VIDEO) != 0) {
@@ -70,86 +71,107 @@ int initialize_ui(void) {
 }
 
 void draw_and_gate(SDL_Renderer *renderer, int x, int y) {
+    int width = 20;   // Width of the OR gate
+    int height = 40;  // Height of the OR gate
+
     // Draw the rectangular left part
-    SDL_RenderDrawLine(renderer, x, y, x, y + 50); // Left vertical line
-    SDL_RenderDrawLine(renderer, x, y, x + 25, y); // Top horizontal line
-    SDL_RenderDrawLine(renderer, x, y + 50, x + 25, y + 50); // Bottom horizontal line
+    SDL_RenderDrawLine(renderer, x, y - height / 2, x, y + height / 2); // Left vertical line
+    SDL_RenderDrawLine(renderer, x, y - height / 2, x + width, y - height / 2); // Top horizontal line
+    SDL_RenderDrawLine(renderer, x, y + height / 2, x + width, y + height / 2); // Bottom horizontal line
 
     // Draw the semi-circle on the right side
-    int centerX = x + 25;
-    int centerY = y + 25;
-    int radius = 25;
+    int radius = height / 2;
+    int center_x = x + width;
+    int center_y = y;
+    
     for (int angle = -90; angle <= 90; angle++) {
         int dx = (int)(radius * cos(angle * M_PI / 180.0));
         int dy = (int)(radius * sin(angle * M_PI / 180.0));
-        SDL_RenderDrawPoint(renderer, centerX + dx, centerY + dy);
+        SDL_RenderDrawPoint(renderer, center_x + dx, center_y + dy);
     }
 
     // Draw input lines
-    SDL_RenderDrawLine(renderer, x - 15, y + 10, x, y + 10); // Top input
-    SDL_RenderDrawLine(renderer, x - 15, y + 40, x, y + 40); // Bottom input
+    SDL_RenderDrawLine(renderer, x - width, y - height / 4, x, y - height / 4); // Top input
+    SDL_RenderDrawLine(renderer, x - width, y + height / 4, x, y + height / 4); // Bottom input
 
     // Draw output line
-    SDL_RenderDrawLine(renderer, centerX + radius, centerY, centerX + radius + 15, centerY);
+    SDL_RenderDrawLine(renderer, center_x + radius, center_y, center_x + radius + 15, center_y);
 }
 
 void draw_or_gate(SDL_Renderer *renderer, int x, int y) {
-    int width = 15;   // Width of the OR gate
+    int width = 10;   // Width of the OR gate
     int height = 40;  // Height of the OR gate
-    int radius = height / 2; // Radius of the circles
-
-    // Coordinates of the rectangle (centered at (x, y))
-    int rect_x = x + width / 2;
-    int rect_y = y + height / 2;
-
-    // // Draw the rectangle
-    // SDL_Rect rect = { rect_x, rect_y, width, height };
-    // SDL_RenderDrawRect(renderer, &rect);
-
-    SDL_RenderDrawLine(renderer, x-radius*0.5, y-height/2, x+radius, y-height/2); // Top horizontal line
-    SDL_RenderDrawLine(renderer, x-radius*0.5, y+height/2, x+radius, y+height/2); // Bottom horizontal line
+    int radius_right = height / 2; // Radius of the right circle
 
     // Number of points for smooth circles
     int num_points = 100;
 
     // Draw the right semicircle (only the right half protruding)
-    int center_right_x = x + width;
-    int center_y = y;
+    int center_x_right = x + width;
     SDL_Point right_circle_points[num_points];
     for (int i = 0; i < num_points; i++) {
         double theta = M_PI / 2 - (M_PI * i) / (num_points - 1); // From 90 degrees to -90 degrees
-        int x_pos = center_right_x + radius * cos(theta);
-        int y_pos = center_y - radius * sin(theta);
+        int x_pos = center_x_right + radius_right * cos(theta);
+        int y_pos = y - radius_right * sin(theta);
         right_circle_points[i] = (SDL_Point){ x_pos, y_pos };
     }
     SDL_RenderDrawLines(renderer, right_circle_points, num_points);
 
-    // Draw the left semicircle (only the left half inside the rectangle)
-    int center_left_x = x - width;
-    SDL_Point left_circle_points[num_points];
+    // // Draw the left semicircle 
+    // int radius_left = height / 2.5; // Radius of the left circle
+    // int center_x_left = x - width;
+    // SDL_Point left_circle_points[num_points];
+    // for (int i = 0; i < num_points; i++) {
+    //     double theta = M_PI / 2 - (M_PI * i) / (num_points - 1); // From 90 degrees to -90 degrees
+    //     int x_pos = center_x_left + radius_left * cos(theta);
+    //     int y_pos = y - radius_left * sin(theta);
+    //     left_circle_points[i] = (SDL_Point){ x_pos, y_pos };
+    // }
+    // SDL_RenderDrawLines(renderer, left_circle_points, num_points);
+
+
+    /// graphics library: https://discourse.libsdl.org/t/sdl2-gfx-extensions/26574
+
+    // Draw the ellipse
+    int semi_major_axis = 2;
+    int semi_minor_axis = 1;
+    int center_x_left = x - width;
+    SDL_Point ellipse_points[num_points];
     for (int i = 0; i < num_points; i++) {
         double theta = M_PI / 2 - (M_PI * i) / (num_points - 1); // From 90 degrees to -90 degrees
-        int x_pos = center_left_x + radius * cos(theta);
-        int y_pos = center_y - radius * sin(theta);
-        left_circle_points[i] = (SDL_Point){ x_pos, y_pos };
+        int x_pos = center_x_left + semi_major_axis * cos(theta);
+        int y_pos = y - semi_minor_axis * sin(theta);
+        ellipse_points[i] = (SDL_Point){ x_pos, y_pos };
     }
-    SDL_RenderDrawLines(renderer, left_circle_points, num_points);
+    SDL_RenderDrawLines(renderer, ellipse_points, num_points);
 
-    // Draw input lines extending to the edge of the left semicircle
-    int input_y_offset = height / 4;
+    // // Connect the semi-circles
+    // int rect_x = x + width / 2;
+    // int rect_y = y + height / 2;
 
-    // Calculate exact tangent points on the left semicircle for the inputs
-    int tangent_x_top = center_left_x + (int)(radius * cos(M_PI / 4)); // 45 degrees
-    int tangent_y_top = y - input_y_offset;
+    // // double y_max_circle_left = y + radius_left;
+    // // double y_min_circle_left = y - radius_left;
 
-    int tangent_x_bottom = center_left_x + (int)(radius * cos(M_PI / 4)); // 45 degrees
-    int tangent_y_bottom = y + input_y_offset;
+    // double y_max_circle_right = y + radius_right;
+    // double y_min_circle_right = y - radius_right;
 
-    SDL_RenderDrawLine(renderer, tangent_x_top - 15, tangent_y_top, tangent_x_top, tangent_y_top); // Top input line
-    SDL_RenderDrawLine(renderer, tangent_x_bottom - 15, tangent_y_bottom, tangent_x_bottom, tangent_y_bottom); // Bottom input line
+    // double x_1 = get_x_on_circle(center_x_left, y, radius_left, y_max_circle_left);
+    // double x_2 = get_x_on_circle(center_x_right, y, radius_right, y_max_circle_right);
 
-    // Draw output line extending from the right semicircle
-    SDL_RenderDrawLine(renderer, center_right_x + radius, y, center_right_x + radius + 15, y);
+    // SDL_RenderDrawLine(renderer, x_1, y_max_circle_left, x_2, y_max_circle_right); // Top line
+    // SDL_RenderDrawLine(renderer, x_1, y_min_circle_left, x_2, y_min_circle_right); // Bottom line
+
+    // // Drawing the input lines
+    // double y_top_input_line = y + radius_left / 2;
+    // double y_bottom_input_line = y - radius_left / 2;
+    // // Could have been y_bottom_input_line instead of y_top_input_line ∵ both give the same x value
+    // double x_input_lines = get_x_on_circle(center_x_left, y, radius_left, y_top_input_line);
+
+    // SDL_RenderDrawLine(renderer, x_input_lines - 15, y_top_input_line, x_input_lines, y_top_input_line); // Top input line
+    // SDL_RenderDrawLine(renderer, x_input_lines - 15, y_bottom_input_line, x_input_lines, y_bottom_input_line); // Bottom input line
+
+    // // Draw output line extending from the right semicircle
+    // SDL_RenderDrawLine(renderer, center_x_right + radius_right, y, center_x_right + radius_left + 15, y);
 }
 
 
@@ -175,4 +197,9 @@ void draw_not_gate(SDL_Renderer *renderer, int x, int y) {
 
     // Draw output line
     SDL_RenderDrawLine(renderer, bubbleCenterX + bubbleRadius, bubbleCenterY, bubbleCenterX + bubbleRadius + 15, bubbleCenterY);
+}
+
+double get_x_on_circle(int x_center, int y_center, int radius, int y) {
+    // Only take the solutions for the right semi-circle
+    return x_center + sqrt(radius * radius - (y - y_center) * (y - y_center));
 }
