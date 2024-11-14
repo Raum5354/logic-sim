@@ -117,61 +117,48 @@ void draw_or_gate(SDL_Renderer *renderer, int x, int y) {
     }
     SDL_RenderDrawLines(renderer, right_circle_points, num_points);
 
-    // // Draw the left semicircle 
-    // int radius_left = height / 2.5; // Radius of the left circle
-    // int center_x_left = x - width;
-    // SDL_Point left_circle_points[num_points];
-    // for (int i = 0; i < num_points; i++) {
-    //     double theta = M_PI / 2 - (M_PI * i) / (num_points - 1); // From 90 degrees to -90 degrees
-    //     int x_pos = center_x_left + radius_left * cos(theta);
-    //     int y_pos = y - radius_left * sin(theta);
-    //     left_circle_points[i] = (SDL_Point){ x_pos, y_pos };
-    // }
-    // SDL_RenderDrawLines(renderer, left_circle_points, num_points);
+    // Draw the left semicircle 
+    int radius_left = height / 2.5; // Radius of the left circle
+    int center_x_left = x - width;
+    SDL_Point left_circle_points[num_points];
+    for (int i = 0; i < num_points; i++) {
+        double theta = M_PI / 2 - (M_PI * i) / (num_points - 1); // From 90 degrees to -90 degrees
+        int x_pos = center_x_left + radius_left * cos(theta);
+        int y_pos = y - radius_left * sin(theta);
+        left_circle_points[i] = (SDL_Point){ x_pos, y_pos };
+    }
+    SDL_RenderDrawLines(renderer, left_circle_points, num_points);
 
 
     /// graphics library: https://discourse.libsdl.org/t/sdl2-gfx-extensions/26574
 
-    // Draw the ellipse
-    int semi_major_axis = 2;
-    int semi_minor_axis = 1;
-    int center_x_left = x - width;
-    SDL_Point ellipse_points[num_points];
-    for (int i = 0; i < num_points; i++) {
-        double theta = M_PI / 2 - (M_PI * i) / (num_points - 1); // From 90 degrees to -90 degrees
-        int x_pos = center_x_left + semi_major_axis * cos(theta);
-        int y_pos = y - semi_minor_axis * sin(theta);
-        ellipse_points[i] = (SDL_Point){ x_pos, y_pos };
-    }
-    SDL_RenderDrawLines(renderer, ellipse_points, num_points);
+    // Connect the semi-circles
+    int rect_x = x + width / 2;
+    int rect_y = y + height / 2;
 
-    // // Connect the semi-circles
-    // int rect_x = x + width / 2;
-    // int rect_y = y + height / 2;
+    double y_max_circle_left = y + radius_left;
+    double y_min_circle_left = y - radius_left;
 
-    // // double y_max_circle_left = y + radius_left;
-    // // double y_min_circle_left = y - radius_left;
+    double y_max_circle_right = y + radius_right;
+    double y_min_circle_right = y - radius_right;
 
-    // double y_max_circle_right = y + radius_right;
-    // double y_min_circle_right = y - radius_right;
+    double x_1 = get_x_on_circle(center_x_left, y, radius_left, y_max_circle_left);
+    double x_2 = get_x_on_circle(center_x_right, y, radius_right, y_max_circle_right);
 
-    // double x_1 = get_x_on_circle(center_x_left, y, radius_left, y_max_circle_left);
-    // double x_2 = get_x_on_circle(center_x_right, y, radius_right, y_max_circle_right);
+    SDL_RenderDrawLine(renderer, x_1, y_max_circle_left, x_2, y_max_circle_right); // Top line
+    SDL_RenderDrawLine(renderer, x_1, y_min_circle_left, x_2, y_min_circle_right); // Bottom line
 
-    // SDL_RenderDrawLine(renderer, x_1, y_max_circle_left, x_2, y_max_circle_right); // Top line
-    // SDL_RenderDrawLine(renderer, x_1, y_min_circle_left, x_2, y_min_circle_right); // Bottom line
+    // Drawing the input lines
+    double y_top_input_line = y + radius_left / 2;
+    double y_bottom_input_line = y - radius_left / 2;
+    // Could have been y_bottom_input_line instead of y_top_input_line ∵ both give the same x value
+    double x_input_lines = get_x_on_circle(center_x_left, y, radius_left, y_top_input_line);
 
-    // // Drawing the input lines
-    // double y_top_input_line = y + radius_left / 2;
-    // double y_bottom_input_line = y - radius_left / 2;
-    // // Could have been y_bottom_input_line instead of y_top_input_line ∵ both give the same x value
-    // double x_input_lines = get_x_on_circle(center_x_left, y, radius_left, y_top_input_line);
+    SDL_RenderDrawLine(renderer, x_input_lines - 15, y_top_input_line, x_input_lines, y_top_input_line); // Top input line
+    SDL_RenderDrawLine(renderer, x_input_lines - 15, y_bottom_input_line, x_input_lines, y_bottom_input_line); // Bottom input line
 
-    // SDL_RenderDrawLine(renderer, x_input_lines - 15, y_top_input_line, x_input_lines, y_top_input_line); // Top input line
-    // SDL_RenderDrawLine(renderer, x_input_lines - 15, y_bottom_input_line, x_input_lines, y_bottom_input_line); // Bottom input line
-
-    // // Draw output line extending from the right semicircle
-    // SDL_RenderDrawLine(renderer, center_x_right + radius_right, y, center_x_right + radius_left + 15, y);
+    // Draw output line extending from the right semicircle
+    SDL_RenderDrawLine(renderer, center_x_right + radius_right, y, center_x_right + radius_left + 15, y);
 }
 
 
